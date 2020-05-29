@@ -6,6 +6,7 @@ cp -r storage.skel/* storage/
 if [[ ! -e storage/.docker.init ]];
 then
 	echo "Fresh installation, initializing database..."
+	php artisan key:generate
 	php artisan migrate:fresh --force
 	php artisan passport:install
 	chown www-data:www-data storage/oauth*key
