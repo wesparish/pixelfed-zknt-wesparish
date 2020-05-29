@@ -20,6 +20,9 @@ RUN set -xe;\
 FROM reg.zknt.org/zknt/debian-php
 COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
-RUN apt-install php-curl php-zip php-bcmath php-intl php-mbstring php-xml optipng pngquant jpegoptim gifsicle ffmpeg php-imagick php-gd php-redis php-mysql
+RUN apt-install php-curl php-zip php-bcmath php-intl php-mbstring php-xml optipng pngquant jpegoptim gifsicle ffmpeg php-imagick php-gd php-redis php-mysql &&\
+  a2enmod rewrite &&\
+  sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+WORKDIR /var/www
 VOLUME /var/www/storage /var/www/bootstrap
 ENTRYPOINT /entrypoint.sh
