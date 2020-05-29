@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -xeo pipefail
 
 cp -r storage.skel/* storage/
 
