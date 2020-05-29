@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
-cd /var/www
 cp -r storage.skel/* storage/
+
+if [[ ! -e storage/.docker.init ]];
+then
+	echo "Fresh installation, initializing database..."
+	php artisan migrate:fresh --force
+	php artisan passport:install
+	chown www-data:www-data storage/oauth*key
+	echo done > storage/.docker.init
+fi
 
 php artisan storage:link
 php artisan horizon:assets
