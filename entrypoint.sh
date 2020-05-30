@@ -3,6 +3,8 @@ set -xeo pipefail
 
 cp -r storage.skel/* storage/
 
+php /wait-for-db.php
+
 if [[ ! -e storage/.docker.init ]];
 then
 	echo "Fresh installation, initializing database..."
