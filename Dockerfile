@@ -20,6 +20,7 @@ RUN set -xe;\
 FROM reg.zknt.org/zknt/debian-php
 COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
+COPY worker-entrypoint.sh /worker-entrypoint.sh
 COPY wait-for-db.php /wait-for-db.php
 RUN apt-install php-curl php-zip php-bcmath php-intl php-mbstring php-xml optipng pngquant jpegoptim gifsicle ffmpeg php-imagick php-gd php-redis php-mysql &&\
   a2enmod rewrite &&\
