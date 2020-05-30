@@ -9,7 +9,7 @@ $conn = mysqli_connect(
 );
 
 $counter = 10;
-$count = 0;
+$count = 1;
 while (!$conn) {
     echo("Waiting for Database... $count / $counter\n");
     sleep(2);
