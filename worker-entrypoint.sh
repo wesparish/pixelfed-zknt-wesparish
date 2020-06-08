@@ -10,4 +10,12 @@ then
 	exit 1
 fi
 
+gosu www-data php artisan migrate:status | grep No && migrations=yes || migrations=no
+if [ $migrations = "yes" ];
+then
+	echo "Database needs migrations, exiting..."
+	sleep 5
+	exit 1
+fi
+
 gosu www-data php artisan horizon
