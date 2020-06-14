@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -xeo pipefail
 
+if [ ! -z $FORCE_HTTPS ]
+then
+	sed -i 's#</VirtualHost#SetEnv HTTPS on\n</VirtualHost#' /etc/apache2/sites-enabled/000-default.conf
+fi
+
 cp -r storage.skel/* storage/
 
 php /wait-for-db.php
