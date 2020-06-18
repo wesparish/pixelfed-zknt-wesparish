@@ -21,7 +21,7 @@ then
 fi
 
 php artisan storage:link
-php artisan horizon:assets
+php artisan horizon:publish
 php artisan route:cache
 php artisan view:cache
 php artisan config:cache
