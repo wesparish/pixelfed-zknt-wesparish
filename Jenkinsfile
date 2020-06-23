@@ -8,7 +8,7 @@ official_image = ""
 pipeline {
   agent any
   triggers {
-    upstream(upstreamProjects: "../debian-php/master", threshold: hudson.model.Result.SUCCESS)
+    upstream(upstreamProjects: "../debian-php/trunk", threshold: hudson.model.Result.SUCCESS)
   }
   stages {
     stage('Build image') {
