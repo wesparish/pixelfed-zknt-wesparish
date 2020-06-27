@@ -20,7 +20,9 @@ COPY worker-entrypoint.sh /worker-entrypoint.sh
 COPY wait-for-db.php /wait-for-db.php
 RUN apt-install php-curl php-zip php-bcmath php-intl php-mbstring php-xml optipng pngquant jpegoptim gifsicle ffmpeg php-imagick php-gd php-redis php-mysql &&\
   a2enmod rewrite &&\
-  sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+  sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf &&\
+  sed -i 's/^post_max_size.*/post_max_size = 100M/g' /etc/php/7.3/apache2/php.ini &&\
+  sed -i 's/^upload_max_filesize.*/upload_max_filesize = 100M/g' /etc/php/7.3/apache2/php.ini
 WORKDIR /var/www
 VOLUME /var/www/storage /var/www/bootstrap
 ENTRYPOINT /entrypoint.sh
