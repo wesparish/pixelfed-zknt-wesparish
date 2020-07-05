@@ -13,25 +13,24 @@ php /wait-for-db.php
 if [[ ! -e storage/.docker.init ]]
 then
 	echo "Fresh installation, initializing database..."
-	php artisan key:generate
-	php artisan migrate:fresh --force
-	php artisan passport:install
-	chown www-data:www-data storage/oauth*key
+	gosu www-data php artisan key:generate
+	gosu www-data php artisan migrate:fresh --force
+	gosu www-data php artisan passport:keys
 	echo done > storage/.docker.init
 fi
 
-php artisan storage:link
-php artisan horizon:publish
-php artisan route:cache
-php artisan view:cache
-php artisan config:cache
+gosu www-data php artisan storage:link
+gosu www-data php artisan horizon:publish
+gosu www-data php artisan route:cache
+gosu www-data php artisan view:cache
+gosu www-data php artisan config:cache
 
 echo "++++ Check for needed migrations... ++++"
 # check for migrations
-php artisan migrate:status | grep No && migrations=yes || migrations=no
+gosu www-data php artisan migrate:status | grep No && migrations=yes || migrations=no
 if [ $migrations = "yes" ];
 then
-	php artisan migrate --force
+	gosu www-data php artisan migrate --force
 fi
 
 echo "++++ Start apache... ++++"
