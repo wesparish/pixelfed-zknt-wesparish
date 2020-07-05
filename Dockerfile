@@ -1,7 +1,7 @@
 FROM reg.zknt.org/zknt/debian-php:7.4 as builder
 
 RUN set -xe;\
-  apt-install git php-curl php-zip php-bcmath php-intl php-mbstring php-xml composer &&\
+  apt-install git unzip php-curl php-zip php-bcmath php-intl php-mbstring php-xml composer &&\
   composer global require hirak/prestissimo --no-interaction --no-suggest --prefer-dist &&\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
