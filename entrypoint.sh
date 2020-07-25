@@ -21,6 +21,7 @@ fi
 
 gosu www-data php artisan storage:link
 gosu www-data php artisan horizon:publish
+gosu www-data php artisan cache:clear
 gosu www-data php artisan route:cache
 gosu www-data php artisan view:cache
 gosu www-data php artisan config:cache
