@@ -1,5 +1,7 @@
 FROM reg.zknt.org/zknt/debian-php:7.4 as builder
 
+ARG DATE
+
 RUN set -xe;\
   apt-install git unzip php-curl php-zip php-bcmath php-intl php-mbstring php-xml composer &&\
   composer global require hirak/prestissimo --no-interaction --no-suggest --prefer-dist &&\
@@ -26,3 +28,5 @@ RUN apt-install php-curl php-zip php-bcmath php-intl php-mbstring php-xml optipn
 WORKDIR /var/www
 VOLUME /var/www/storage /var/www/bootstrap
 ENTRYPOINT /entrypoint.sh
+
+LABEL build.date=$DATE
