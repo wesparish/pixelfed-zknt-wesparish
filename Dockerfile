@@ -8,7 +8,7 @@ RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/6e822b67c50dfb6cc6dc352ce80bf3326b06cca9.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/fc7f271f6bc0987b7883d9c0f1ecbb5134d1991c.patch | git apply &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
