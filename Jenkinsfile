@@ -1,49 +1,55 @@
+version = ""
 project = "pixelfed"
 repo = "zknt"
 registry = "reg.zknt.org"
 registry_credentials = "6ff44976-23cd-4cc2-902c-de8c340e65e5"
 timeStamp = Calendar.getInstance().getTime().format('YYYY-MM-dd',TimeZone.getTimeZone('UTC'))
-official_image = ""
 
 pipeline {
   agent any
   triggers {
-    upstream(upstreamProjects: "../debian-php/trunk", threshold: hudson.model.Result.SUCCESS)
+    upstream(upstreamProjects: "../debian-php-74/trunk", threshold: hudson.model.Result.SUCCESS)
   }
-  stages {
-    stage('Build image') {
-      steps {
-        withDockerRegistry([ credentialsId: registry_credentials, url: "https://"+registry ]) {
-          script {
-            def customImage = docker.build(registry+'/'+repo+'/'+project, "--build-arg DATE=$timeStamp --pull .")
-            customImage.push(timeStamp)
-            customImage.push()
+    stages {
+      stage('Build image') {
+        steps {
+          withDockerRegistry([ credentialsId: registry_credentials, url: "https://"+registry ]) {
+            script {
+              version = timeStamp
+              def customImage = docker.build(registry+'/'+repo+'/'+project, "--pull --build-arg VERSION=$version --build-arg DATE=$timeStamp .")
+              customImage.push(version)
+              customImage.push("latest")
+              def io_registry_credentials = "3deeee3d-6fce-4430-98dd-9b4db56f43f7"
+              withDockerRegistry([ credentialsId: io_registry_credentials ]) {
+                def io_registry_image = repo + '/' + project + ':' + version
+                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + io_registry_image
+                sh "docker push " + io_registry_image
+                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + io_registry_image.split(/\:/)[0] + ":latest"
+                sh "docker push " + io_registry_image.split(/\:/)[0] + ":latest"
+              }
 
-            io_registry_credentials = "3deeee3d-6fce-4430-98dd-9b4db56f43f7"
-            withDockerRegistry([ credentialsId: io_registry_credentials ]) {
-              official_image = repo+'/'+project
-              sh "docker image tag " + registry+'/'+repo+'/'+project + ' ' + official_image
-              sh "docker image tag " + registry+'/'+repo+'/'+project + ' ' + official_image+':'+timeStamp
-              sh "docker push " + official_image
-              sh "docker push " + official_image+':'+timeStamp
+              def quay_credentials= "18fb6f7e-c6bc-4d06-9bf9-08c2af6bfc1a"
+              withDockerRegistry([ credentialsId: quay_credentials, url: "https://quay.io" ]) {
+                def quay_image = 'quay.io/' + repo + '/' + project + ':' + version
+                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + quay_image
+                sh "docker push " + quay_image
+                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + quay_image.split(/\:/)[0] + ":latest"
+                sh "docker push " + quay_image.split(/\:/)[0] + ":latest"
+              }
             }
           }
         }
       }
     }
-  }
 
   post {
-    always{
-      emailext body: 'build finished', subject: '[jenkins] docker ' + project + ': ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
-    }
     success {
-      withCredentials([string(credentialsId: '90700f9c-c5cf-449b-81af-d854c08265f5', variable: 'CONFIG_JSON')]) {
-        withDockerRegistry([ credentialsId: registry_credentials, url: "https://"+registry ]) {
-         sh "docker pull reg.zknt.org/zknt/toot"
-         sh 'docker run -i -e CONFIG_JSON=$CONFIG_JSON -e TOOT="Successfully built and pushed new image: '+official_image+':'+timeStamp+' https://hub.docker.com/r/zknt/pixelfed/tags" reg.zknt.org/zknt/toot'
-        }
-      }
+      sh """docker image prune -f"""
+      sh """docker rmi -f \$(docker images -q $registry/$repo/$project:$version)"""
+      sh """for image in \$(grep FROM Dockerfile | cut -d ' ' -f 2 | grep -vi -e SCRATCH -e bootstrapped | uniq); do docker rmi -f \$(docker images -q \${image}); done"""
+    }
+    always {
+      emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+version+'): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
     }
   }
   options {

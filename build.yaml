@@ -1,0 +1,6 @@
+version: ""
+project: pixelfed
+trigger_upstream: ../debian-php-74/trunk
+timestamp_version: true
+additional_tags:
+  - latest
