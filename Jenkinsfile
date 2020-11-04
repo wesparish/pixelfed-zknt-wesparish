@@ -43,12 +43,11 @@ pipeline {
     }
 
   post {
-    success {
+    always {
+      sh """docker container prune -f"""
       sh """docker image prune -f"""
       sh """docker rmi -f \$(docker images -q $registry/$repo/$project:$version)"""
       sh """for image in \$(grep FROM Dockerfile | cut -d ' ' -f 2 | grep -vi -e SCRATCH -e bootstrapped | uniq); do docker rmi -f \$(docker images -q \${image}); done"""
-    }
-    always {
       emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+version+'): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
     }
   }
