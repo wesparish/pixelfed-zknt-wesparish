@@ -34,6 +34,9 @@ then
 	gosu www-data php artisan migrate --force
 fi
 
+# create instance actor
+gosu www-data php artisan instance:actor
+
 echo "++++ Start apache... ++++"
 source /etc/apache2/envvars
 /usr/local/sbin/dumb-init apache2 -DFOREGROUND
