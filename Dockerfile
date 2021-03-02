@@ -2,8 +2,10 @@ FROM reg.zknt.org/zknt/debian-php:7.4 as builder
 
 ARG DATE
 
+ENV PHPVER=7.4
+
 RUN set -xe;\
-  apt-install git unzip php-curl php-zip php-bcmath php-intl php-mbstring php-xml composer &&\
+  apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml composer &&\
   composer global require hirak/prestissimo --no-interaction --no-suggest --prefer-dist &&\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
@@ -16,15 +18,16 @@ RUN set -xe;\
   rm -rf .git tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .gitignore .editorconfig .gitattributes .dockerignore
 
 FROM reg.zknt.org/zknt/debian-php:7.4
+ENV PHPVER=7.4
 COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
 COPY worker-entrypoint.sh /worker-entrypoint.sh
 COPY wait-for-db.php /wait-for-db.php
-RUN apt-install php-curl php-zip php-bcmath php-intl php-mbstring php-xml optipng pngquant jpegoptim gifsicle ffmpeg php-imagick php-gd php-redis php-mysql &&\
+RUN apt-install php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml optipng pngquant jpegoptim gifsicle ffmpeg php${PHPVER}-imagick php${PHPVER}-gd php${PHPVER}-redis php${PHPVER}-mysql &&\
   a2enmod rewrite &&\
   sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf &&\
-  sed -i 's/^post_max_size.*/post_max_size = 100M/g' /etc/php/7.4/apache2/php.ini &&\
-  sed -i 's/^upload_max_filesize.*/upload_max_filesize = 100M/g' /etc/php/7.4/apache2/php.ini
+  sed -i 's/^post_max_size.*/post_max_size = 100M/g' /etc/php/${PHPVER}/apache2/php.ini &&\
+  sed -i 's/^upload_max_filesize.*/upload_max_filesize = 100M/g' /etc/php/${PHPVER}/apache2/php.ini
 WORKDIR /var/www
 VOLUME /var/www/storage /var/www/bootstrap
 ENTRYPOINT /entrypoint.sh
