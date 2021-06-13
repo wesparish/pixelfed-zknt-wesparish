@@ -3,6 +3,7 @@ FROM reg.zknt.org/zknt/debian-php:7.4 as builder
 ARG DATE
 
 ENV PHPVER=7.4
+ENV PATCH_COMMIT=ece5d198c11a599b5151031de1fd1ecc330a7141
 
 RUN set -xe;\
   apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml composer &&\
@@ -10,7 +11,7 @@ RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/085da96ef62b64f8b7fab4fbc91216cf4813ff0e.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/${PATCH_COMMIT}.patch | git apply &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
