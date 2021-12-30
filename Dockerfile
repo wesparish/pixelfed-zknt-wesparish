@@ -12,6 +12,7 @@ RUN set -xe;\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${PATCH_COMMIT}.patch | git apply &&\
+  composer require beyondcode/laravel-self-diagnosis &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
