@@ -1,3 +1,4 @@
+---
 version: ""
 project: pixelfed
 trigger_upstream: ../debian-php-74/trunk
