@@ -3,7 +3,8 @@ FROM reg.zknt.org/zknt/debian-php:7.4 as builder
 ARG DATE
 
 ENV PHPVER=7.4
-ENV PATCH_COMMIT=ece5d198c11a599b5151031de1fd1ecc330a7141
+ENV IP_PATCH=2722da0c4749b726bfb87ac56ba055940c2d2fc7
+ENV IMPRESSUM_PATCH=dbb47aa7ef59f83e9f88d71992b928b618b4bc03
 
 RUN set -xe;\
   apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml composer &&\
@@ -11,7 +12,9 @@ RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/${PATCH_COMMIT}.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/${IMPRESSUM_PATCH}.patch | git apply &&\
+  composer require beyondcode/laravel-self-diagnosis &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
