@@ -27,7 +27,7 @@ COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
 COPY worker-entrypoint.sh /worker-entrypoint.sh
 COPY wait-for-db.php /wait-for-db.php
-RUN apt-install php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml optipng pngquant jpegoptim gifsicle ffmpeg php${PHPVER}-imagick php${PHPVER}-gd php${PHPVER}-redis php${PHPVER}-mysql &&\
+RUN apt-install php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml optipng pngquant jpegoptim gifsicle ffmpeg php${PHPVER}-imagick php${PHPVER}-gd php${PHPVER}-redis php${PHPVER}-mysql php${PHPVER}-pgsql &&\
   a2enmod rewrite &&\
   sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf &&\
   sed -i 's/^post_max_size.*/post_max_size = 100M/g' /etc/php/${PHPVER}/apache2/php.ini &&\
