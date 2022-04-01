@@ -7,7 +7,6 @@ ENV IP_PATCH=2722da0c4749b726bfb87ac56ba055940c2d2fc7
 
 RUN set -xe;\
   apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml composer &&\
-  composer global require hirak/prestissimo --no-interaction --no-suggest --prefer-dist &&\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
