@@ -23,6 +23,7 @@ ENV PHPVER=7.4
 COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
 COPY worker-entrypoint.sh /worker-entrypoint.sh
+COPY websockets-entrypoint.sh /websockets-entrypoint.sh
 COPY wait-for-db.php /wait-for-db.php
 RUN apt-install php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml optipng pngquant jpegoptim gifsicle ffmpeg php${PHPVER}-imagick php${PHPVER}-gd php${PHPVER}-redis php${PHPVER}-mysql php${PHPVER}-pgsql &&\
   a2enmod rewrite &&\
