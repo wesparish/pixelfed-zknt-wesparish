@@ -1,8 +1,8 @@
-FROM reg.zknt.org/zknt/debian-php:7.4 as builder
+FROM reg.zknt.org/zknt/debian-php:8.1 as builder
 
 ARG DATE
 
-ENV PHPVER=7.4
+ENV PHPVER=8.1
 ENV IP_PATCH=2722da0c4749b726bfb87ac56ba055940c2d2fc7
 ENV DISCOVERY_PATCH=79c8dba872805e197d4855d3a22a6ddea05cfb0f
 

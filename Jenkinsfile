@@ -8,7 +8,7 @@ timeStamp = Calendar.getInstance().getTime().format('YYYY-MM-dd',TimeZone.getTim
 pipeline {
   agent any
   triggers {
-    upstream(upstreamProjects: "../debian-php-74/trunk", threshold: hudson.model.Result.SUCCESS)
+    upstream(upstreamProjects: "../debian-php-81/trunk", threshold: hudson.model.Result.SUCCESS)
   }
     stages {
       stage('Build image') {
