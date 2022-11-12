@@ -20,8 +20,8 @@ RUN set -xe;\
   cp -r storage storage.skel &&\
   rm -rf .git tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .gitignore .editorconfig .gitattributes .dockerignore
 
-FROM reg.zknt.org/zknt/debian-php:7.4
-ENV PHPVER=7.4
+FROM reg.zknt.org/zknt/debian-php:8.1
+ENV PHPVER=8.1
 COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
 COPY worker-entrypoint.sh /worker-entrypoint.sh
