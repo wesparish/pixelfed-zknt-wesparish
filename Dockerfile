@@ -14,8 +14,6 @@ RUN set -xe;\
   cd www &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
-  #composer require beyondcode/laravel-self-diagnosis &&\
-  composer dump-autoload &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
