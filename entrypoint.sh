@@ -29,6 +29,7 @@ gosu www-data php artisan view:cache
 echo "++++ Check for needed migrations... ++++"
 # check for migrations
 gosu www-data php artisan migrate:status | grep No && migrations=yes || migrations=no
+gosu www-data php artisan migrate:status | grep Pending && migrations=yes || migrations=no
 if [ $migrations = "yes" ];
 then
 	gosu www-data php artisan migrate --force
