@@ -3,8 +3,9 @@ FROM reg.zknt.org/zknt/debian-php:8.1 as builder
 ARG DATE
 
 ENV PHPVER=8.1
-ENV IP_PATCH=2722da0c4749b726bfb87ac56ba055940c2d2fc7
-ENV DISCOVERY_PATCH=79c8dba872805e197d4855d3a22a6ddea05cfb0f
+ENV IP_PATCH=38d9c2017f8406fcf13c3fc2960ea6d20b449cbd
+ENV DISCOVERY_PATCH=4c82fa3e0a2d0a94417cd6b1637893c92f1b1bd5
+ENV GITHUB_PATCH=920b06f6f16c22b32c8e2a14772fc053fbb973bb
 
 RUN set -xe;\
   apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml composer
@@ -14,6 +15,7 @@ RUN set -xe;\
   cd www &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
