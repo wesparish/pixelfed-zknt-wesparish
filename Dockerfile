@@ -8,7 +8,10 @@ ENV DISCOVERY_PATCH=4c82fa3e0a2d0a94417cd6b1637893c92f1b1bd5
 ENV GITHUB_PATCH=920b06f6f16c22b32c8e2a14772fc053fbb973bb
 
 RUN set -xe;\
-  apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml composer
+  apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml
+RUN set -xe;\
+  curl https://raw.githubusercontent.com/composer/getcomposer.org/0a51b6fe383f7f61cf1d250c742ec655aa044c94/web/installer | php -- --quiet --2.2 &&\
+  mv composer.phar /usr/local/bin/composer
 RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
