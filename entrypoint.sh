@@ -40,4 +40,4 @@ gosu www-data php artisan instance:actor
 
 echo "++++ Start apache... ++++"
 source /etc/apache2/envvars
-/usr/local/sbin/dumb-init apache2 -DFOREGROUND
+dumb-init apache2 -DFOREGROUND

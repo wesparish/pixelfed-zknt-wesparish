@@ -2,41 +2,34 @@ version = ""
 project = "pixelfed"
 repo = "zknt"
 registry = "reg.zknt.org"
-registry_credentials = "6ff44976-23cd-4cc2-902c-de8c340e65e5"
 timeStamp = Calendar.getInstance().getTime().format('YYYY-MM-dd',TimeZone.getTimeZone('UTC'))
 
 pipeline {
   agent any
-  triggers {
-    upstream(upstreamProjects: "../debian-php-81/trunk", threshold: hudson.model.Result.SUCCESS)
+  environment {
+    ZKNT_CRED = credentials("6ff44976-23cd-4cc2-902c-de8c340e65e5")
+    IO_CRED = credentials("3deeee3d-6fce-4430-98dd-9b4db56f43f7")
+    QUAY_CRED = credentials("18fb6f7e-c6bc-4d06-9bf9-08c2af6bfc1a")
   }
     stages {
       stage('Build image') {
         steps {
-          withDockerRegistry([ credentialsId: registry_credentials, url: "https://"+registry ]) {
-            script {
-              version = timeStamp
-              def customImage = docker.build(registry+'/'+repo+'/'+project, "--pull --build-arg VERSION=$version --build-arg DATE=$timeStamp .")
-              customImage.push(version)
-              customImage.push("latest")
-              def io_registry_credentials = "3deeee3d-6fce-4430-98dd-9b4db56f43f7"
-              withDockerRegistry([ credentialsId: io_registry_credentials ]) {
-                def io_registry_image = repo + '/' + project + ':' + version
-                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + io_registry_image
-                sh "docker push " + io_registry_image
-                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + io_registry_image.split(/\:/)[0] + ":latest"
-                sh "docker push " + io_registry_image.split(/\:/)[0] + ":latest"
-              }
-
-              def quay_credentials= "18fb6f7e-c6bc-4d06-9bf9-08c2af6bfc1a"
-              withDockerRegistry([ credentialsId: quay_credentials, url: "https://quay.io" ]) {
-                def quay_image = 'quay.io/' + repo + '/' + project + ':' + version
-                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + quay_image
-                sh "docker push " + quay_image
-                sh "docker image tag " + registry+'/'+repo+'/'+project+':'+version + ' ' + quay_image.split(/\:/)[0] + ":latest"
-                sh "docker push " + quay_image.split(/\:/)[0] + ":latest"
-              }
-            }
+          script {
+            sh "buildah login -u " + ZKNT_CRED_USR + " -p " + ZKNT_CRED_PSW + " reg.zknt.org"
+            def image = registry + '/' + repo + '/' + project
+            sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp -t pixelfed:test"
+            sh "buildah tag pixelfed:test reg.zknt.org/zknt/pixelfed:test"
+            sh "buildah push " + image + ':test'
+          }
+          script {
+            sh "buildah login -u $IO_CRED_USR -p $IO_CRED_PSW docker.io"
+            sh "buildah tag pixelfed:test docker.io/zknt/pixelfed:test"
+            sh "buildah push docker.io/zknt/pixelfed:test"
+          }
+          script {
+            sh "buildah login -u $QUAY_CRED_USR -p $QUAY_CRED_PSW quay.io"
+            sh "buildah tag pixelfed:test quay.io/zknt/pixelfed:test"
+            sh "buildah push quay.io/zknt/pixelfed:test"
           }
         }
       }
@@ -44,10 +37,7 @@ pipeline {
 
   post {
     always {
-      sh """docker container prune -f"""
-      sh """docker image prune -f"""
-      sh """docker rmi -f \$(docker images -q $registry/$repo/$project:$version)"""
-      sh """for image in \$(grep FROM Dockerfile | cut -d ' ' -f 2 | grep -vi -e SCRATCH -e bootstrapped | uniq); do docker rmi -f \$(docker images -q \${image}); done"""
+      sh """buildah prune -a"""
       emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+version+'): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
     }
   }
