@@ -37,7 +37,7 @@ pipeline {
 
   post {
     always {
-      sh """buildah prune -a"""
+      sh """buildah rmi -af"""
       emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+version+'): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
     }
   }
