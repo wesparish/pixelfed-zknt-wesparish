@@ -22,12 +22,12 @@ pipeline {
             sh "buildah push " + image + ':test'
           }
           script {
-            sh "buildah login -u $IO_CRED_USR -p $IO_CRED_PSW docker.io"
+            sh "buildah login -u " + IO_CRED_USR+ " -p " + IO_CRED_PSW + " docker.io"
             sh "buildah tag pixelfed:test docker.io/zknt/pixelfed:test"
             sh "buildah push docker.io/zknt/pixelfed:test"
           }
           script {
-            sh "buildah login -u $QUAY_CRED_USR -p $QUAY_CRED_PSW quay.io"
+            sh "buildah login -u " + QUAY_CRED_USR+ " -p " + QUAY_CRED_PSW + " quay.io"
             sh "buildah tag pixelfed:test quay.io/zknt/pixelfed:test"
             sh "buildah push quay.io/zknt/pixelfed:test"
           }
