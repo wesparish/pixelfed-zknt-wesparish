@@ -7,6 +7,7 @@ then
 fi
 
 cp -r storage.skel/* storage/
+chown -R www-data:www-data storage/ bootstrap/
 
 php /wait-for-db.php
 
