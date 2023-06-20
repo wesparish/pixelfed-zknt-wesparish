@@ -15,7 +15,7 @@ RUN set -xe;\
 RUN set -xe;\
   docker-php-ext-configure mbstring --disable-mbregex &&\
   docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm &&\
-  docker-php-ext-install -j$(nproc) curl zip bcmath intl mbstring xml pcntl gd mysqli pdo_mysql pdo_pgsql &&\
+  docker-php-ext-install -j$(nproc) curl zip bcmath intl mbstring xml pcntl gd mysqli pdo_mysql pdo_pgsql opcache &&\
   pecl install imagick &&\
   pecl install redis &&\
   docker-php-ext-enable imagick redis
