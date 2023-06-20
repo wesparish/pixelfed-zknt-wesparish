@@ -57,8 +57,9 @@ RUN set -xe;\
 RUN set -xe;\
   a2enmod rewrite &&\
   sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf &&\
-  sed -i 's/^post_max_size.*/post_max_size = 100M/g' /usr/local/etc/php/php.ini* &&\
-  sed -i 's/^upload_max_filesize.*/upload_max_filesize = 100M/g' /usr/local/etc/php/php.ini*
+  sed -i 's/^post_max_size.*/post_max_size = 100M/g' "$PHP_INI_DIR"/php.ini* &&\
+  sed -i 's/^upload_max_filesize.*/upload_max_filesize = 100M/g' "$PHP_INI_DIR"/php.ini* &&\
+  mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 WORKDIR /var/www
 VOLUME /var/www/storage /var/www/bootstrap
 ENTRYPOINT /entrypoint.sh
