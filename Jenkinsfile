@@ -38,7 +38,7 @@ pipeline {
   post {
     always {
       sh """buildah rmi -af"""
-      emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+version+'): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
+      emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+timeStamp+'-test): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
     }
   }
   options {
