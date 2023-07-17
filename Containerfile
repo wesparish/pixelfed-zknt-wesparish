@@ -5,6 +5,7 @@ ARG DATE
 ENV IP_PATCH=a665f449bfad129b0e20d3f2b386e30332452b40
 ENV DISCOVERY_PATCH=4c82fa3e0a2d0a94417cd6b1637893c92f1b1bd5
 ENV GITHUB_PATCH=920b06f6f16c22b32c8e2a14772fc053fbb973bb
+ENV BEAGLE_PATCH=1621a5eba09d7a2cf8ccb281db34a9d8064c4f8f
 
 RUN set -xe;\
   apt-get update &&\
@@ -30,6 +31,7 @@ RUN set -xe;\
   curl -L https://github.com/hnrd/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/${BEAGLE_PATCH}.patch | git apply &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
