@@ -3,10 +3,11 @@ FROM reg.zknt.org/zknt/debian-php:8.1 as builder
 ARG DATE
 
 ENV PHPVER=8.1
-ENV IP_PATCH=a665f449bfad129b0e20d3f2b386e30332452b40
-ENV DISCOVERY_PATCH=4c82fa3e0a2d0a94417cd6b1637893c92f1b1bd5
-ENV GITHUB_PATCH=920b06f6f16c22b32c8e2a14772fc053fbb973bb
-ENV BEAGLE_PATCH=1621a5eba09d7a2cf8ccb281db34a9d8064c4f8f
+ENV IP_PATCH=14cca91255bca69dec195112ce2fbd110e2406ca
+ENV DISCOVERY_PATCH=f4a01bc97efeb259fd0c6e2016949c90675cc555
+ENV GITHUB_PATCH=06bcf80133f6c212f1674d280974c669b4524283
+ENV BEAGLE_PATCH=f45a489d5e45de21d648437880ef525a2e957b7b
+ENV USERNAME_PATCH=737319bff8697263df19b9b4c0a2ee7cc8055476
 
 RUN set -xe;\
   apt-install git unzip php${PHPVER}-curl php${PHPVER}-zip php${PHPVER}-bcmath php${PHPVER}-intl php${PHPVER}-mbstring php${PHPVER}-xml
@@ -21,6 +22,7 @@ RUN set -xe;\
   curl -L https://github.com/hnrd/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
   curl -L https://github.com/hnrd/pixelfed/commit/${BEAGLE_PATCH}.patch | git apply &&\
+  curl -L https://github.com/hnrd/pixelfed/commit/${USERNAME_PATCH}.patch | git apply &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
