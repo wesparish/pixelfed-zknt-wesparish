@@ -18,18 +18,29 @@ pipeline {
             sh "buildah login -u " + ZKNT_CRED_USR + " -p " + ZKNT_CRED_PSW + " reg.zknt.org"
             def image = registry + '/' + repo + '/' + project
             sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp -t pixelfed:test"
+            sh "buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp -t pixelfed:fpm"
             sh "buildah tag pixelfed:test reg.zknt.org/zknt/pixelfed:test"
+            sh "buildah tag pixelfed:test reg.zknt.org/zknt/pixelfed:fpm"
             sh "buildah push " + image + ':test'
+            sh "buildah push " + image + ':fpm'
           }
           script {
             sh "buildah login -u " + IO_CRED_USR+ " -p " + IO_CRED_PSW + " docker.io"
             sh "buildah tag pixelfed:test docker.io/zknt/pixelfed:test"
+            sh "buildah tag pixelfed:fpm docker.io/zknt/pixelfed:fpm"
+            sh "buildah tag pixelfed:fpm docker.io/zknt/pixelfed:fpm-"+timeStamp
             sh "buildah push docker.io/zknt/pixelfed:test"
+            sh "buildah push docker.io/zknt/pixelfed:fpm"
+            sh "buildah push docker.io/zknt/pixelfed:fpm-"+timeStamp
           }
           script {
             sh "buildah login -u " + QUAY_CRED_USR+ " -p " + QUAY_CRED_PSW + " quay.io"
             sh "buildah tag pixelfed:test quay.io/zknt/pixelfed:test"
+            sh "buildah tag pixelfed:fpm quay.io/zknt/pixelfed:fpm"
+            sh "buildah tag pixelfed:fpm quay.io/zknt/pixelfed:fpm-"+timeStamp
             sh "buildah push quay.io/zknt/pixelfed:test"
+            sh "buildah push quay.io/zknt/pixelfed:fpm"
+            sh "buildah push quay.io/zknt/pixelfed:fpm-"+timeStamp
           }
         }
       }
