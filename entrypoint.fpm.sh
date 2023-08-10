@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -xeo pipefail
 
-if [ ! -z $FORCE_HTTPS ]
-then
-	sed -i 's#</VirtualHost#SetEnv HTTPS on\n</VirtualHost#' /etc/apache2/sites-enabled/000-default.conf
-fi
-
 cp -r storage.skel/* storage/
 chown -R www-data:www-data storage/ bootstrap/
 
@@ -27,11 +22,13 @@ gosu www-data php artisan cache:clear
 gosu www-data php artisan route:cache
 gosu www-data php artisan view:cache
 
+rsync --archive --delete public/ /public/
+
 echo "++++ Check for needed migrations... ++++"
 # check for migrations
 gosu www-data php artisan migrate:status | grep No && migrations=yes || migrations=no
 gosu www-data php artisan migrate:status | grep Pending && migrations=yes || migrations=no
-if [ $migrations = "yes" ];
+if [ "$migrations" = "yes" ];
 then
 	gosu www-data php artisan migrate --force
 fi

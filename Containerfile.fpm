@@ -53,8 +53,9 @@ COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 
 RUN set -xe;\
   apt-get update &&\
+  apt-get upgrade -y &&\
   apt-get install --no-install-recommends -y libzip4 libpq5 libmagickwand-6.q16-6 libxpm4 libwebp6 &&\
-  apt-get install --no-install-recommends -y optipng pngquant jpegoptim gifsicle ffmpeg locales gosu dumb-init &&\
+  apt-get install --no-install-recommends -y optipng pngquant jpegoptim gifsicle ffmpeg locales gosu dumb-init rsync &&\
   apt-get clean all &&\
   rm -rf /var/lib/apt/lists/*
 
@@ -65,7 +66,7 @@ RUN set -xe;\
   sed -i 's/^upload_max_filesize.*/upload_max_filesize = 100M/g' "$PHP_INI_DIR"/php.ini* &&\
   mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 WORKDIR /var/www
-VOLUME /var/www/storage /var/www/bootstrap
+VOLUME /var/www/storage /var/www/bootstrap /public
 ENTRYPOINT /entrypoint.sh
 
 LABEL build.date=$DATE
