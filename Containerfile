@@ -29,11 +29,11 @@ RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/${BEAGLE_PATCH}.patch | git apply &&\
-  curl -L https://github.com/hnrd/pixelfed/commit/${USERNAME_PATCH}.patch | git apply &&\
+  curl -L https://git.zknt.org/chris/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
+  curl -L https://git.zknt.org/chris/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
+  curl -L https://git.zknt.org/chris/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
+  curl -L https://git.zknt.org/chris/pixelfed/commit/${BEAGLE_PATCH}.patch | git apply &&\
+  curl -L https://git.zknt.org/chris/pixelfed/commit/${USERNAME_PATCH}.patch | git apply &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
