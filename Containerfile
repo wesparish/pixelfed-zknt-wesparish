@@ -1,5 +1,7 @@
 FROM docker.io/php:8.1-apache-bullseye as builder
 
+ARG VERSION=dev
+
 ARG DATE
 
 ENV IP_PATCH=14cca91255bca69dec195112ce2fbd110e2406ca
@@ -29,6 +31,7 @@ RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
+  git checkout $VERSION &&\
   curl -L https://git.zknt.org/chris/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
   curl -L https://git.zknt.org/chris/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
   curl -L https://git.zknt.org/chris/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
@@ -42,6 +45,7 @@ RUN set -xe;\
 
 FROM docker.io/php:8.1-apache-bullseye
 ARG DATE
+ARG VERSION=dev
 
 COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
@@ -68,4 +72,4 @@ WORKDIR /var/www
 VOLUME /var/www/storage /var/www/bootstrap
 ENTRYPOINT /entrypoint.sh
 
-LABEL build.date=$DATE
+LABEL build.date=$DATE version.pixelfed=$VERSION
