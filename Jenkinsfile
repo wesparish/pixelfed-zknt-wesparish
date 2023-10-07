@@ -23,31 +23,39 @@ pipeline {
             sh "buildah tag pixelfed:dev reg.zknt.org/zknt/pixelfed:latest"
             sh "buildah tag pixelfed:dev-fpm reg.zknt.org/zknt/pixelfed:dev-fpm"
             sh "buildah tag pixelfed:dev-fpm reg.zknt.org/zknt/pixelfed:fpm"
-            sh "buildah push reg.zknt.org/zknt/pixelfed:dev'
-            sh "buildah push reg.zknt.org/zknt/pixelfed:latest'
-            sh "buildah push reg.zknt.org/zknt/pixelfed:dev-fpm'
-            sh "buildah push reg.zknt.org/zknt/pixelfed:fpm'
+            sh "buildah push reg.zknt.org/zknt/pixelfed:dev"
+            sh "buildah push reg.zknt.org/zknt/pixelfed:latest"
+            sh "buildah push reg.zknt.org/zknt/pixelfed:dev-fpm"
+            sh "buildah push reg.zknt.org/zknt/pixelfed:fpm"
           }
           script {
             sh "buildah login -u " + IO_CRED_USR+ " -p " + IO_CRED_PSW + " docker.io"
             sh "buildah tag pixelfed:dev docker.io/zknt/pixelfed:dev"
             sh "buildah tag pixelfed:dev docker.io/zknt/pixelfed:latest"
+            sh "buildah tag pixelfed:dev docker.io/zknt/pixelfed:$timeStamp"
             sh "buildah tag pixelfed:dev-fpm docker.io/zknt/pixelfed:dev-fpm"
             sh "buildah tag pixelfed:dev-fpm docker.io/zknt/pixelfed:fpm"
+            sh "buildah tag pixelfed:dev-fpm docker.io/zknt/pixelfed:$timeStamp-fpm"
             sh "buildah push docker.io/zknt/pixelfed:dev"
             sh "buildah push docker.io/zknt/pixelfed:dev-fpm"
             sh "buildah push docker.io/zknt/pixelfed:latest"
+            sh "buildah push docker.io/zknt/pixelfed:$timeStamp"
+            sh "buildah push docker.io/zknt/pixelfed:$timeStamp-fpm"
             sh "buildah push docker.io/zknt/pixelfed:fpm"
           }
           script {
             sh "buildah login -u " + QUAY_CRED_USR+ " -p " + QUAY_CRED_PSW + " quay.io"
             sh "buildah tag pixelfed:dev quay.io/zknt/pixelfed:dev"
             sh "buildah tag pixelfed:dev quay.io/zknt/pixelfed:latest"
+            sh "buildah tag pixelfed:dev quay.io/zknt/pixelfed:$timeStamp"
             sh "buildah tag pixelfed:dev-fpm quay.io/zknt/pixelfed:dev-fpm"
             sh "buildah tag pixelfed:dev-fpm quay.io/zknt/pixelfed:fpm"
+            sh "buildah tag pixelfed:dev-fpm quay.io/zknt/pixelfed:$timeStamp-fpm"
             sh "buildah push quay.io/zknt/pixelfed:dev"
             sh "buildah push quay.io/zknt/pixelfed:latest"
+            sh "buildah push quay.io/zknt/pixelfed:$timeStamp"
             sh "buildah push quay.io/zknt/pixelfed:dev-fpm"
+            sh "buildah push quay.io/zknt/pixelfed:$timeStamp-fpm"
             sh "buildah push quay.io/zknt/pixelfed:fpm"
           }
         }
