@@ -1,0 +1,26 @@
+From 812e130d0ec6841bc822a3506485147eeae381d6 Mon Sep 17 00:00:00 2001
+From: hnrd <cg@zknt.org>
+Date: Mon, 10 Apr 2023 18:35:40 +0200
+Subject: [PATCH 3/6] point to modified sourcecode
+
+as per AGPL license of original source, modifications must be disclosed.
+---
+ resources/views/site/opensource.blade.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/resources/views/site/opensource.blade.php b/resources/views/site/opensource.blade.php
+index cb2e7c77..63645f0c 100644
+--- a/resources/views/site/opensource.blade.php
++++ b/resources/views/site/opensource.blade.php
+@@ -7,7 +7,7 @@
+   </div>
+   <hr>
+   <section>
+-    <p class="lead">The software that powers this website is called <a href="https://pixelfed.org">Pixelfed</a> and anyone can <a href="https://github.com/pixelfed/pixelfed">download</a> or <a href="https://github.com/pixelfed/pixelfed">view</a> the source code and run their own instance!</p>
++    <p class="lead">This website runs a modified version of the Pixelfed software, which you can find on <a href="https://git.zknt.org/chris/pixelfed/">Git</a> (original, unmodified software: <a href="https://github.com/pixelfed/pixelfed/">here on Github</a></p>
+   </section>
+ @endsection
+ 
+-- 
+2.42.0
+

@@ -1,0 +1,26 @@
+From e860abb64b9f5f29b519dd85c976918152878437 Mon Sep 17 00:00:00 2001
+From: hnrd <cg@zknt.org>
+Date: Thu, 27 Jul 2023 12:49:01 +0200
+Subject: [PATCH 5/6] allow 30 char usernames
+
+raise maximum username length, because why not?
+---
+ app/Http/Controllers/Auth/RegisterController.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/Http/Controllers/Auth/RegisterController.php b/app/Http/Controllers/Auth/RegisterController.php
+index 5eb1159f..227bf06d 100644
+--- a/app/Http/Controllers/Auth/RegisterController.php
++++ b/app/Http/Controllers/Auth/RegisterController.php
+@@ -70,7 +70,7 @@ class RegisterController extends Controller
+ 		$usernameRules = [
+ 			'required',
+ 			'min:2',
+-			'max:15',
++			'max:30',
+ 			'unique:users',
+ 			function ($attribute, $value, $fail) {
+ 				$dash = substr_count($value, '-');
+-- 
+2.42.0
+

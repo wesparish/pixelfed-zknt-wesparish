@@ -1,0 +1,43 @@
+From 13995f061214886fa9dda3f64341b543c2df5646 Mon Sep 17 00:00:00 2001
+From: hnrd <cg@zknt.org>
+Date: Mon, 17 Jul 2023 10:47:39 +0200
+Subject: [PATCH 4/6] disable beagle service
+
+beagle is a remote API service provided by dansup and used for centralised lookups.
+Using the beagle service without users explicit consent violates GDPR.
+As it's not configurable at the moment this patch disables remote communication with beagle.
+---
+ app/Services/Account/RemoteAuthService.php | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/app/Services/Account/RemoteAuthService.php b/app/Services/Account/RemoteAuthService.php
+index 4412352a..14b4d625 100644
+--- a/app/Services/Account/RemoteAuthService.php
++++ b/app/Services/Account/RemoteAuthService.php
+@@ -120,6 +120,7 @@ class RemoteAuthService
+         }
+ 
+         return Cache::remember(self::CACHE_KEY . 'domain-compatible:' . $domain, 14400, function() use($domain) {
++	    return true;
+             try {
+                 $res = Http::timeout(20)->retry(3, 750)->get('https://beagle.pixelfed.net/api/v1/raa/domain?domain=' . $domain);
+                 if(!$res->ok()) {
+@@ -144,6 +145,7 @@ class RemoteAuthService
+ 
+     public static function lookupWebfingerUses($wf)
+     {
++	return 0;
+         try {
+             $res = Http::timeout(20)->retry(3, 750)->get('https://beagle.pixelfed.net/api/v1/raa/lookup?webfinger=' . $wf);
+             if(!$res->ok()) {
+@@ -166,6 +168,7 @@ class RemoteAuthService
+ 
+     public static function submitToBeagle($ow, $ou, $dw, $du)
+     {
++	return;
+         try {
+             $url = 'https://beagle.pixelfed.net/api/v1/raa/submit';
+             $res = Http::throw()->timeout(10)->get($url, [
+-- 
+2.42.0
+

@@ -4,12 +4,6 @@ ARG VERSION=dev
 
 ARG DATE
 
-ENV IP_PATCH=14cca91255bca69dec195112ce2fbd110e2406ca
-ENV DISCOVERY_PATCH=f4a01bc97efeb259fd0c6e2016949c90675cc555
-ENV GITHUB_PATCH=06bcf80133f6c212f1674d280974c669b4524283
-ENV BEAGLE_PATCH=f45a489d5e45de21d648437880ef525a2e957b7b
-ENV USERNAME_PATCH=737319bff8697263df19b9b4c0a2ee7cc8055476
-
 RUN set -xe;\
   apt-get update &&\
   apt-get install --no-install-recommends -y git locales libcurl4-openssl-dev libzip-dev libicu-dev libxml2-dev libjpeg62-turbo-dev libpng-dev libmagickwand-dev libpq-dev libxpm-dev libwebp-dev &&\
@@ -27,21 +21,23 @@ RUN set -xe;\
   curl https://raw.githubusercontent.com/composer/getcomposer.org/0a51b6fe383f7f61cf1d250c742ec655aa044c94/web/installer | php -- --quiet --2.2 &&\
   mv composer.phar /usr/local/bin/composer
 
+COPY patches/ /patches/
+
 RUN set -xe;\
   cd /var && rm -rf www &&\
   git clone https://github.com/pixelfed/pixelfed.git www &&\
   cd www &&\
   git checkout $VERSION &&\
-  curl -L https://git.zknt.org/chris/pixelfed/commit/${IP_PATCH}.patch | git apply &&\
-  curl -L https://git.zknt.org/chris/pixelfed/commit/${DISCOVERY_PATCH}.patch | git apply &&\
-  curl -L https://git.zknt.org/chris/pixelfed/commit/${GITHUB_PATCH}.patch | git apply &&\
-  curl -L https://git.zknt.org/chris/pixelfed/commit/${BEAGLE_PATCH}.patch | git apply &&\
-  curl -L https://git.zknt.org/chris/pixelfed/commit/${USERNAME_PATCH}.patch | git apply &&\
+  git apply /patches/0001-remove-IP-logging.patch &&\
+  git apply /patches/0002-hardcode-discovery-settings.patch &&\
+  git apply /patches/0003-point-to-modified-sourcecode.patch &&\
+  git apply /patches/0004-disable-beagle-service.patch &&\
+  git apply /patches/0005-allow-30-char-usernames.patch &&\
   composer install --prefer-dist --no-interaction --no-ansi --no-dev --optimize-autoloader &&\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
   cp -r storage storage.skel &&\
-  rm -rf .git tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .gitignore .editorconfig .gitattributes .dockerignore
+  rm -rf .git tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .gitignore .editorconfig .gitattributes .dockerignore /patches
 
 FROM docker.io/php:8.1-apache-bullseye
 ARG DATE

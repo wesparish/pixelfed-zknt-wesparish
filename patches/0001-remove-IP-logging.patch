@@ -1,0 +1,87 @@
+From 983309a3f92c3cc40d70f46d0eb0ba8eb752d7ff Mon Sep 17 00:00:00 2001
+From: hnrd <cg@zknt.org>
+Date: Sat, 27 May 2023 11:27:56 +0200
+Subject: [PATCH 1/6] remove IP logging
+
+Replace unneeded logging of IPs and User-Agent strings with meaningless static data.
+---
+ app/Http/Controllers/Auth/LoginController.php  | 4 ++--
+ app/Http/Controllers/Settings/HomeSettings.php | 8 ++++----
+ app/Listeners/AuthLogin.php                    | 4 ++--
+ app/Listeners/LogFailedLogin.php               | 4 ++--
+ 4 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/app/Http/Controllers/Auth/LoginController.php b/app/Http/Controllers/Auth/LoginController.php
+index 3861d327..e6b345a6 100644
+--- a/app/Http/Controllers/Auth/LoginController.php
++++ b/app/Http/Controllers/Auth/LoginController.php
+@@ -108,8 +108,8 @@ class LoginController extends Controller
+         $log->action = 'auth.login';
+         $log->message = 'Account Login';
+         $log->link = null;
+-        $log->ip_address = $request->ip();
+-        $log->user_agent = $request->userAgent();
++	$log->ip_address = "127.0.0.23";
++	$log->user_agent = "Pixelfed.de";
+         $log->save();
+     }
+ 
+diff --git a/app/Http/Controllers/Settings/HomeSettings.php b/app/Http/Controllers/Settings/HomeSettings.php
+index 082a72af..63448905 100644
+--- a/app/Http/Controllers/Settings/HomeSettings.php
++++ b/app/Http/Controllers/Settings/HomeSettings.php
+@@ -139,8 +139,8 @@ trait HomeSettings
+ 			$log->action = 'account.edit.password';
+ 			$log->message = 'Password changed';
+ 			$log->link = null;
+-			$log->ip_address = $request->ip();
+-			$log->user_agent = $request->userAgent();
++			$log->ip_address = "127.0.0.23";
++			$log->user_agent = "Pixelfed.de";
+ 			$log->save();
+ 
+ 			Mail::to($request->user())->send(new PasswordChange($user));
+@@ -185,8 +185,8 @@ trait HomeSettings
+ 			$log->action = 'account.edit.email';
+ 			$log->message = 'Email changed';
+ 			$log->link = null;
+-			$log->ip_address = $request->ip();
+-			$log->user_agent = $request->userAgent();
++			$log->ip_address = "127.0.0.23";
++			$log->user_agent = "Pixelfed.de";
+ 			$log->save();
+ 		}
+ 
+diff --git a/app/Listeners/AuthLogin.php b/app/Listeners/AuthLogin.php
+index 90806965..d0261ecc 100644
+--- a/app/Listeners/AuthLogin.php
++++ b/app/Listeners/AuthLogin.php
+@@ -122,8 +122,8 @@ class AuthLogin
+         $device = DB::transaction(function() use($user) {
+             return UserDevice::firstOrCreate([
+                 'user_id'       => $user->id,
+-                'ip'            => request()->ip(),
+-                'user_agent'    => str_limit(request()->userAgent(), 180),
++		'ip'            => "127.0.0.23",
++		'user_agent'    => "Pixelfed.de",
+             ]);
+         });
+     }
+diff --git a/app/Listeners/LogFailedLogin.php b/app/Listeners/LogFailedLogin.php
+index c6ba3305..9442bfd0 100644
+--- a/app/Listeners/LogFailedLogin.php
++++ b/app/Listeners/LogFailedLogin.php
+@@ -41,8 +41,8 @@ class LogFailedLogin
+         $log->action = 'auth.failed';
+         $log->message = 'Failed login attempt';
+         $log->link = null;
+-        $log->ip_address = $request->ip();
+-        $log->user_agent = $request->userAgent();
++	$log->ip_address = "127.0.0.23";
++        $log->user_agent = "Pixelfed.de";
+         $log->save();
+     }
+ }
+-- 
+2.42.0
+
