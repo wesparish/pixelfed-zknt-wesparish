@@ -5,7 +5,7 @@ ARG DATE
 
 RUN set -xe;\
   apt-get update &&\
-  apt-get install --no-install-recommends -y git locales libcurl4-openssl-dev libzip-dev libicu-dev libxml2-dev libjpeg62-turbo-dev libpng-dev libmagickwand-dev libpq-dev libxpm-dev libwebp-dev &&\
+  apt-get install --no-install-recommends -y git locales libcurl4-openssl-dev libzip-dev libicu-dev libxml2-dev libjpeg62-turbo-dev libpng-dev libmagickwand-dev libpq-dev libxpm-dev libwebp-dev zip libpq-dev &&\
   apt-get clean all &&\
   rm -rf /var/lib/apt/lists/*
 
@@ -13,6 +13,7 @@ RUN set -xe;\
   docker-php-ext-configure mbstring --disable-mbregex &&\
   docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm &&\
   docker-php-ext-install -j$(nproc) curl zip bcmath intl mbstring xml pcntl gd mysqli pdo_mysql pdo_pgsql opcache &&\
+  docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && docker-php-ext-install pdo_pgsql pgsql &&\
   pecl install imagick &&\
   pecl install redis &&\
   docker-php-ext-enable imagick redis
@@ -54,7 +55,7 @@ RUN set -xe;\
   apt-get update &&\
   apt-get upgrade -y &&\
   apt-get install --no-install-recommends -y libzip4 libpq5 libmagickwand-6.q16-6 libxpm4 libwebp6 &&\
-  apt-get install --no-install-recommends -y optipng pngquant jpegoptim gifsicle ffmpeg locales gosu dumb-init rsync &&\
+  apt-get install --no-install-recommends -y optipng pngquant jpegoptim gifsicle ffmpeg locales gosu dumb-init rsync zip &&\
   apt-get clean all &&\
   rm -rf /var/lib/apt/lists/*
 
