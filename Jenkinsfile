@@ -12,51 +12,76 @@ pipeline {
     QUAY_CRED = credentials("18fb6f7e-c6bc-4d06-9bf9-08c2af6bfc1a")
   }
     stages {
-      stage('Build image') {
+      stage('Prepare') {
         steps {
           script {
             sh "buildah login -u " + ZKNT_CRED_USR + " -p " + ZKNT_CRED_PSW + " reg.zknt.org"
-            def image = registry + '/' + repo + '/' + project
-            sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp -t pixelfed:dev"
-            sh "buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp -t pixelfed:dev-fpm"
-            sh "buildah tag pixelfed:dev reg.zknt.org/zknt/pixelfed:dev"
-            sh "buildah tag pixelfed:dev reg.zknt.org/zknt/pixelfed:latest"
-            sh "buildah tag pixelfed:dev-fpm reg.zknt.org/zknt/pixelfed:dev-fpm"
-            sh "buildah tag pixelfed:dev-fpm reg.zknt.org/zknt/pixelfed:fpm"
-            sh "buildah push reg.zknt.org/zknt/pixelfed:dev"
-            sh "buildah push reg.zknt.org/zknt/pixelfed:latest"
-            sh "buildah push reg.zknt.org/zknt/pixelfed:dev-fpm"
-            sh "buildah push reg.zknt.org/zknt/pixelfed:fpm"
-          }
-          script {
             sh "buildah login -u " + IO_CRED_USR+ " -p " + IO_CRED_PSW + " docker.io"
-            sh "buildah tag pixelfed:dev docker.io/zknt/pixelfed:dev"
-            sh "buildah tag pixelfed:dev docker.io/zknt/pixelfed:latest"
-            sh "buildah tag pixelfed:dev docker.io/zknt/pixelfed:$timeStamp"
-            sh "buildah tag pixelfed:dev-fpm docker.io/zknt/pixelfed:dev-fpm"
-            sh "buildah tag pixelfed:dev-fpm docker.io/zknt/pixelfed:fpm"
-            sh "buildah tag pixelfed:dev-fpm docker.io/zknt/pixelfed:$timeStamp-fpm"
-            sh "buildah push docker.io/zknt/pixelfed:dev"
-            sh "buildah push docker.io/zknt/pixelfed:dev-fpm"
-            sh "buildah push docker.io/zknt/pixelfed:latest"
-            sh "buildah push docker.io/zknt/pixelfed:$timeStamp"
-            sh "buildah push docker.io/zknt/pixelfed:$timeStamp-fpm"
-            sh "buildah push docker.io/zknt/pixelfed:fpm"
-          }
-          script {
             sh "buildah login -u " + QUAY_CRED_USR+ " -p " + QUAY_CRED_PSW + " quay.io"
-            sh "buildah tag pixelfed:dev quay.io/zknt/pixelfed:dev"
-            sh "buildah tag pixelfed:dev quay.io/zknt/pixelfed:latest"
-            sh "buildah tag pixelfed:dev quay.io/zknt/pixelfed:$timeStamp"
-            sh "buildah tag pixelfed:dev-fpm quay.io/zknt/pixelfed:dev-fpm"
-            sh "buildah tag pixelfed:dev-fpm quay.io/zknt/pixelfed:fpm"
-            sh "buildah tag pixelfed:dev-fpm quay.io/zknt/pixelfed:$timeStamp-fpm"
-            sh "buildah push quay.io/zknt/pixelfed:dev"
-            sh "buildah push quay.io/zknt/pixelfed:latest"
-            sh "buildah push quay.io/zknt/pixelfed:$timeStamp"
-            sh "buildah push quay.io/zknt/pixelfed:dev-fpm"
-            sh "buildah push quay.io/zknt/pixelfed:$timeStamp-fpm"
-            sh "buildah push quay.io/zknt/pixelfed:fpm"
+            sh "buildah manifest create pixelfed-dev"
+            sh "buildah manifest create pixelfed-dev-fpm"
+          }
+        }
+      }
+      stage('Build dev amd64') {
+        steps {
+          script {
+            sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp --manifest pixelfed-dev --arch amd64"
+          }
+        }
+      }
+      stage('Build dev arm64') {
+        steps {
+          script {
+            sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp --manifest pixelfed-dev --arch arm64"
+          }
+        }
+      }
+      stage('Build dev-fpm amd64') {
+        steps {
+          script {
+            sh "buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp --manifest pixelfed-dev-fpm --arch amd64"
+          }
+        }
+      }
+      stage('Build dev-fpm arm64') {
+        steps {
+          script {
+            sh "buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp --manifest pixelfed-dev-fpm --arch arm64"
+          }
+        }
+      }
+      //stage('Upload to reg.zknt.org') {
+      //  steps {
+      //    script {
+      //      sh "buildah manifest push pixelfed-dev docker://reg.zknt.org/zknt/pixelfed:dev"
+      //      sh "buildah manifest push pixelfed-dev docker://reg.zknt.org/zknt/pixelfed:latest"
+      //      sh "buildah manifest push pixelfed-dev-fpm docker://reg.zknt.org/zknt/pixelfed:dev-fpm"
+      //      sh "buildah manifest push pixelfed-dev-fpm docker://reg.zknt.org/zknt/pixelfed:fpm"
+      //    }
+      //  }
+      //}
+      stage('Upload to quay.io') {
+        steps {
+          script {
+            sh "buildah manifest push --all pixelfed-dev docker://quay.io/zknt/pixelfed:dev"
+            sh "buildah manifest push --all pixelfed-dev docker://quay.io/zknt/pixelfed:latest"
+            sh "buildah manifest push --all pixelfed-dev docker://quay.io/zknt/pixelfed:$timeStamp"
+            sh "buildah manifest push --all pixelfed-dev-fpm docker://quay.io/zknt/pixelfed:dev-fpm"
+            sh "buildah manifest push --all pixelfed-dev-fpm docker://quay.io/zknt/pixelfed:fpm"
+            sh "buildah manifest push --all pixelfed-dev-fpm docker://quay.io/zknt/pixelfed:$timeStamp-fpm"
+          }
+        }
+      }
+      stage('Upload to docker.io') {
+        steps {
+          script {
+            sh "buildah manifest push --all pixelfed-dev docker://docker.io/zknt/pixelfed:dev"
+            sh "buildah manifest push --all pixelfed-dev docker://docker.io/zknt/pixelfed:latest"
+            sh "buildah manifest push --all pixelfed-dev docker://docker.io/zknt/pixelfed:$timeStamp"
+            sh "buildah manifest push --all pixelfed-dev-fpm docker://docker.io/zknt/pixelfed:dev-fpm"
+            sh "buildah manifest push --all pixelfed-dev-fpm docker://docker.io/zknt/pixelfed:fpm"
+            sh "buildah manifest push --all pixelfed-dev-fpm docker://docker.io/zknt/pixelfed:$timeStamp-fpm"
           }
         }
       }
@@ -65,7 +90,7 @@ pipeline {
   post {
     always {
       sh """buildah rmi -af"""
-      emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+timeStamp+'-test): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
+      emailext body: 'build finished', subject: '[jenkins] docker '+project+'('+timeStamp+'): ' + currentBuild.result, to: 'cg@zknt.org', from: 'sysadm@zknt.org', attachLog: true
     }
   }
   options {
