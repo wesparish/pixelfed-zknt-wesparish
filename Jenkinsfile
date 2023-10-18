@@ -1,13 +1,11 @@
 version = ""
 project = "pixelfed"
 repo = "zknt"
-registry = "reg.zknt.org"
 timeStamp = Calendar.getInstance().getTime().format('YYYY-MM-dd',TimeZone.getTimeZone('UTC'))
 
 pipeline {
   agent any
   environment {
-    ZKNT_CRED = credentials("6ff44976-23cd-4cc2-902c-de8c340e65e5")
     IO_CRED = credentials("3deeee3d-6fce-4430-98dd-9b4db56f43f7")
     QUAY_CRED = credentials("18fb6f7e-c6bc-4d06-9bf9-08c2af6bfc1a")
   }
@@ -15,7 +13,6 @@ pipeline {
       stage('Prepare') {
         steps {
           script {
-            sh "buildah login -u " + ZKNT_CRED_USR + " -p " + ZKNT_CRED_PSW + " reg.zknt.org"
             sh "buildah login -u " + IO_CRED_USR+ " -p " + IO_CRED_PSW + " docker.io"
             sh "buildah login -u " + QUAY_CRED_USR+ " -p " + QUAY_CRED_PSW + " quay.io"
             sh "buildah manifest create pixelfed-dev"
@@ -51,16 +48,6 @@ pipeline {
           }
         }
       }
-      //stage('Upload to reg.zknt.org') {
-      //  steps {
-      //    script {
-      //      sh "buildah manifest push pixelfed-dev docker://reg.zknt.org/zknt/pixelfed:dev"
-      //      sh "buildah manifest push pixelfed-dev docker://reg.zknt.org/zknt/pixelfed:latest"
-      //      sh "buildah manifest push pixelfed-dev-fpm docker://reg.zknt.org/zknt/pixelfed:dev-fpm"
-      //      sh "buildah manifest push pixelfed-dev-fpm docker://reg.zknt.org/zknt/pixelfed:fpm"
-      //    }
-      //  }
-      //}
       stage('Upload to quay.io') {
         steps {
           script {
