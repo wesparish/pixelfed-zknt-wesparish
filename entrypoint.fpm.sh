@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -xeo pipefail
 
-cp -r storage.skel/* storage/
+rsync -a --delete storage.skel/* storage/
+rsync -a --delete public.skel/ public/
 chown -R www-data:www-data storage/ bootstrap/
 
 php /wait-for-db.php
