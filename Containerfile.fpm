@@ -37,6 +37,7 @@ RUN set -xe;\
   chown -R www-data:www-data /var/www &&\
   cp -r storage storage.skel &&\
   cp -r public public.skel &&\
+  chown -R www-data:www-data public.skel storage.skel &&\
   rm -rf .git tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .gitignore .editorconfig .gitattributes .dockerignore
 
 FROM docker.io/php:8.1-fpm-bullseye
