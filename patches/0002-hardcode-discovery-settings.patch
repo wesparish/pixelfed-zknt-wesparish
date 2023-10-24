@@ -1,4 +1,4 @@
-From 2e602bea61489ff59c8084a24de4bc33f44971ad Mon Sep 17 00:00:00 2001
+From b165fa5c54e810263d597a1734189ea5181ba6ec Mon Sep 17 00:00:00 2001
 From: hnrd <cg@zknt.org>
 Date: Mon, 10 Apr 2023 18:04:17 +0200
 Subject: [PATCH 2/6] hardcode discovery settings

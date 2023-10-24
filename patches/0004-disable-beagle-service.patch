@@ -1,4 +1,4 @@
-From 13995f061214886fa9dda3f64341b543c2df5646 Mon Sep 17 00:00:00 2001
+From 9797f7237d4b4a242b284ae0e6f219f51465cbd5 Mon Sep 17 00:00:00 2001
 From: hnrd <cg@zknt.org>
 Date: Mon, 17 Jul 2023 10:47:39 +0200
 Subject: [PATCH 4/6] disable beagle service

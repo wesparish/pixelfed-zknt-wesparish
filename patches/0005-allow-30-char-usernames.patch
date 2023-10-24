@@ -1,4 +1,4 @@
-From e860abb64b9f5f29b519dd85c976918152878437 Mon Sep 17 00:00:00 2001
+From 94c12502b7170bb036c53eb19132c53f00dc54dc Mon Sep 17 00:00:00 2001
 From: hnrd <cg@zknt.org>
 Date: Thu, 27 Jul 2023 12:49:01 +0200
 Subject: [PATCH 5/6] allow 30 char usernames
