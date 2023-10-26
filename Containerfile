@@ -48,6 +48,7 @@ COPY --from=builder /var/www /var/www
 COPY entrypoint.sh /entrypoint.sh
 COPY worker-entrypoint.sh /worker-entrypoint.sh
 COPY websockets-entrypoint.sh /websockets-entrypoint.sh
+COPY schedule-entrypoint.sh /schedule-entrypoint.sh
 COPY wait-for-db.php /wait-for-db.php
 COPY --from=builder /usr/local/lib/php/extensions/no-debug-non-zts-20210902 /usr/local/lib/php/extensions/no-debug-non-zts-20210902
 COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
