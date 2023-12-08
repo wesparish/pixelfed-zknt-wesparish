@@ -23,28 +23,28 @@ pipeline {
       stage('Build dev amd64') {
         steps {
           script {
-            sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp --manifest pixelfed-dev --arch amd64"
+            sh "TMPDIR=/buildah/tmp buildah bud -f Containerfile --build-arg DATE=$timeStamp --manifest pixelfed-dev --arch amd64"
           }
         }
       }
       stage('Build dev arm64') {
         steps {
           script {
-            sh "buildah bud -f Containerfile --build-arg DATE=$timeStamp --manifest pixelfed-dev --arch arm64"
+            sh "TMPDIR=/buildah/tmp buildah bud -f Containerfile --build-arg DATE=$timeStamp --manifest pixelfed-dev --arch arm64"
           }
         }
       }
       stage('Build dev-fpm amd64') {
         steps {
           script {
-            sh "buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp --manifest pixelfed-dev-fpm --arch amd64"
+            sh "TMPDIR=/buildah/tmp buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp --manifest pixelfed-dev-fpm --arch amd64"
           }
         }
       }
       stage('Build dev-fpm arm64') {
         steps {
           script {
-            sh "buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp --manifest pixelfed-dev-fpm --arch arm64"
+            sh "TMPDIR=/buildah/tmp buildah bud -f Containerfile.fpm --build-arg DATE=$timeStamp --manifest pixelfed-dev-fpm --arch arm64"
           }
         }
       }
