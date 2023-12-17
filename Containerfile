@@ -1,6 +1,6 @@
 FROM docker.io/php:8.1-apache-bullseye as builder
 
-ARG VERSION=dev
+ARG VERSION=reenable-restricted-mode
 
 ARG DATE
 
@@ -26,7 +26,7 @@ COPY patches/ /patches/
 
 RUN set -xe;\
   cd /var && rm -rf www &&\
-  git clone https://github.com/pixelfed/pixelfed.git www &&\
+  git clone https://github.com/wesparish/pixelfed.git www &&\
   cd www &&\
   git checkout $VERSION &&\
   git apply /patches/0001-remove-IP-logging.patch &&\
@@ -38,13 +38,15 @@ RUN set -xe;\
   ln -s public html &&\
   chown -R www-data:www-data /var/www &&\
   cp -r storage storage.skel &&\
-  rm -rf .git tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .gitignore .editorconfig .gitattributes .dockerignore /patches
+  rm -rf tests contrib CHANGELOG.md LICENSE .circleci .dependabot .github CODE_OF_CONDUCT.md .env.docker CONTRIBUTING.md README.md docker-compose.yml .env.testing phpunit.xml .env.example .editorconfig .gitattributes .dockerignore /patches
 
 FROM docker.io/php:8.1-apache-bullseye
 ARG DATE
-ARG VERSION=dev
+ARG VERSION=reenable-restricted-mode
 
+RUN rm -rf /var/www
 COPY --from=builder /var/www /var/www
+COPY patches/ /patches/
 COPY entrypoint.sh /entrypoint.sh
 COPY worker-entrypoint.sh /worker-entrypoint.sh
 COPY websockets-entrypoint.sh /websockets-entrypoint.sh
@@ -55,7 +57,7 @@ COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 
 RUN set -xe;\
   apt-get update &&\
-  apt-get install --no-install-recommends -y libzip4 libpq5 libmagickwand-6.q16-6 libxpm4 libwebp6 &&\
+  apt-get install --no-install-recommends -y vim git libzip4 libpq5 libmagickwand-6.q16-6 libxpm4 libwebp6 &&\
   apt-get install --no-install-recommends -y optipng pngquant jpegoptim gifsicle ffmpeg locales gosu dumb-init zip &&\
   apt-get clean all &&\
   rm -rf /var/lib/apt/lists/*
